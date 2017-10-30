@@ -14,8 +14,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "product_catalog")
 public class Product implements Serializable {
 
 	private static final long serialVersionUID = 6802872110370480823L;

@@ -10,10 +10,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
+@Table(name = "image_catalog")
 public class Image implements Serializable {
 
 	private static final long serialVersionUID = -55342477435690367L;
@@ -43,7 +45,7 @@ public class Image implements Serializable {
 		return product;
 	}
 
-	public void setId(Long id) {
+	public void setImageId(Long id) {
 		this.id = id;
 	}
 
