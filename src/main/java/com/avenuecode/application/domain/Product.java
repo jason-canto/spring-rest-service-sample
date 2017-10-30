@@ -1,0 +1,95 @@
+package com.avenuecode.application.domain;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+
+import com.fasterxml.jackson.annotation.JsonFilter;
+
+@Entity
+@JsonFilter("product")
+public class Product implements Serializable {
+
+	private static final long serialVersionUID = 6802872110370480823L;
+
+	@Id
+	@Column(name = "id_product", nullable = false)
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
+
+	@Column(name = "ds_name", nullable = false)
+	private String name;
+
+	@Column(name = "ds_description", nullable = false)
+	private String description;
+
+	@ManyToOne(cascade = { CascadeType.ALL }, optional = true, fetch = FetchType.LAZY)
+	@JoinColumn(name = "parent_product_id")
+	private Product parentProduct;
+
+	@OneToMany(mappedBy = "parentProduct", fetch = FetchType.LAZY)
+	private List<Product> productChildren = new ArrayList<Product>();
+
+	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private List<Image> images;
+
+	public Long getId() {
+		return id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public Product getParentProduct() {
+		return parentProduct;
+	}
+
+	public List<Product> getProductChildren() {
+		return productChildren;
+	}
+
+	public List<Image> getImages() {
+		return images;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public void setParentProduct(Product parentProduct) {
+		this.parentProduct = parentProduct;
+	}
+
+	public void setProductChildren(List<Product> productChildren) {
+		this.productChildren = productChildren;
+	}
+
+	public void setImages(List<Image> images) {
+		this.images = images;
+	}
+
+}
