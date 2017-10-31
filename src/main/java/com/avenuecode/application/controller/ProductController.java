@@ -3,12 +3,18 @@ package com.avenuecode.application.controller;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -77,7 +83,8 @@ public class ProductController {
 	}
 
 	@PutMapping("products/{productId}")
-	public ResponseEntity<Product> updateProduct(@PathVariable Long productId, @RequestBody ProductResource productDto) {
+	public ResponseEntity<Product> updateProduct(@PathVariable Long productId,
+			@RequestBody ProductResource productDto) {
 		Product product = convertResourceToProduct(productDto);
 		if (productId != null) {
 			product.setId(productId);
@@ -89,7 +96,7 @@ public class ProductController {
 	@DeleteMapping("products/{productId}")
 	public ResponseEntity<Void> removeProduct(@PathVariable Long productId) {
 		service.removeProduct(productId);
-		return new ResponseEntity<Void>(HttpStatus.OK);
+		return new ResponseEntity<Void>(HttpStatus.ACCEPTED);
 	}
 
 	@GetMapping("/products/{productId}/images")
@@ -103,8 +110,8 @@ public class ProductController {
 	@GetMapping("/products/{productId}/images/{imageId}")
 	public ResponseEntity<ImageResource> getImage(@PathVariable Long imageId) {
 		Image image = service.findImage(imageId);
-		ImageResource imageDto = imageAssembler.toResource(image);
-		return new ResponseEntity<ImageResource>(imageDto, HttpStatus.OK);
+		ImageResource resource = imageAssembler.toResource(image);
+		return new ResponseEntity<ImageResource>(resource, HttpStatus.OK);
 	}
 
 	@PostMapping("/products/{productId}/images")
@@ -114,8 +121,10 @@ public class ProductController {
 		if (product != null) {
 			image.setProduct(product);
 			service.addImage(image);
+			HttpHeaders headers = new HttpHeaders();
+			headers.setLocation(linkTo(methodOn(getClass()).getProduct(product.getId())).toUri());
 		}
-		return new ResponseEntity<Image>(image, HttpStatus.OK);
+		return new ResponseEntity<Image>(image, HttpStatus.CREATED);
 	}
 
 	@PutMapping("/products/{productId}/images/{imageId}")
@@ -137,8 +146,14 @@ public class ProductController {
 	@DeleteMapping("products/{productId}/images/{imageId}")
 	public ResponseEntity<Void> deleteImage(@PathVariable Long imageId) {
 		service.deleteImage(imageId);
-		return new ResponseEntity<Void>(HttpStatus.OK);
+		return new ResponseEntity<Void>(HttpStatus.ACCEPTED);
 	}
+
+	@ExceptionHandler(IllegalArgumentException.class)
+	public ResponseEntity<Exception> handleBadRequests(Exception exception){
+		return new ResponseEntity<Exception>(exception, HttpStatus.CONFLICT);
+	}
+	
 
 	private Image convertResourceToImage(ImageResource imageDto) {
 		ModelMapper modelMapper = new ModelMapper();

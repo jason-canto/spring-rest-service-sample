@@ -1,8 +1,11 @@
 package com.avenuecode.application.service.resource;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
+
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+
+import org.modelmapper.ModelMapper;
 
 import com.avenuecode.application.controller.ProductController;
 import com.avenuecode.application.domain.Image;
@@ -16,9 +19,19 @@ public class ImageResourceAssembler extends ResourceAssemblerSupport<Image, Imag
 
 	@Override
 	public ImageResource toResource(Image image) {
-		ImageResource imageResource = instantiateResource(image);
 		ModelMapper modelMapper = new ModelMapper();
-		imageResource = modelMapper.map(image, ImageResource.class);
-		return imageResource;
+		ImageResource resource = instantiateResource(image);
+		resource = modelMapper.map(image, ImageResource.class);
+		resource.add(linkTo(ProductController.class)
+				.slash("products")
+				.slash(image.getProduct().getId())
+				.withRel("product"));
+		resource.add(linkTo(ProductController.class)
+				.slash("products")
+				.slash(image.getProduct().getId())
+				.slash("images")
+				.slash(image.getId())
+				.withSelfRel());
+		return resource;
 	}
 }
