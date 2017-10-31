@@ -37,7 +37,7 @@ public class Product implements Serializable {
 	@JoinColumn(name = "parent_product_id")
 	private Product parentProduct;
 
-	@OneToMany(mappedBy = "parentProduct", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "parentProduct", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Product> productChildren = new ArrayList<Product>();
 
 	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
