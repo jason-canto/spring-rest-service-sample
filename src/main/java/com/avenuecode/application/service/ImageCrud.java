@@ -8,6 +8,6 @@ import com.avenuecode.application.domain.Image;
 
 public interface ImageCrud extends CrudRepository<Image, Long>{
 
-	public List<Image> findByProductId(Long id);
+	public List<Image> findByProductProductId(Long id);
 
 }

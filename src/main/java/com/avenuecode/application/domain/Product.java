@@ -25,7 +25,7 @@ public class Product implements Serializable {
 	@Id
 	@Column(name = "id_product", nullable = false)
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
+	private Long productId;
 
 	@Column(name = "ds_name", nullable = false)
 	private String name;
@@ -33,7 +33,7 @@ public class Product implements Serializable {
 	@Column(name = "ds_description", nullable = false)
 	private String description;
 
-	@ManyToOne(cascade = { CascadeType.ALL }, optional = true, fetch = FetchType.LAZY)
+	@ManyToOne(cascade = { CascadeType.ALL }, optional = true)
 	@JoinColumn(name = "parent_product_id")
 	private Product parentProduct;
 
@@ -43,8 +43,8 @@ public class Product implements Serializable {
 	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<Image> images;
 
-	public Long getId() {
-		return id;
+	public Long getProductId() {
+		return productId;
 	}
 
 	public String getName() {
@@ -67,8 +67,8 @@ public class Product implements Serializable {
 		return images;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setProductId(Long productId) {
+		this.productId = productId;
 	}
 
 	public void setName(String name) {

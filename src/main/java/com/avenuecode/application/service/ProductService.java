@@ -42,7 +42,7 @@ public class ProductService {
 
 	public List<Image> getAllImages(Long productId) {
 		List<Image> imageList = new ArrayList<Image>();
-		imageCrud.findByProductId(productId).forEach(imageList::add);
+		imageCrud.findByProductProductId(productId).forEach(imageList::add);
 		return imageList;
 	}
 

@@ -1,16 +1,9 @@
 package com.avenuecode.application.controller;
 
-import java.util.Arrays;
 import java.util.List;
-
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Resource;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,6 +21,7 @@ import com.avenuecode.application.service.ProductService;
 import com.avenuecode.application.service.resource.ImageResource;
 import com.avenuecode.application.service.resource.ImageResourceAssembler;
 import com.avenuecode.application.service.resource.LightProductResource;
+import com.avenuecode.application.service.resource.LightProductResourceAssembler;
 import com.avenuecode.application.service.resource.ProductResource;
 import com.avenuecode.application.service.resource.ProductResourceAssembler;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -39,55 +33,56 @@ public class ProductController {
 	private ProductService service;
 
 	@Autowired
-	private ProductResourceAssembler resourceAssembler;
+	private ProductResourceAssembler productAssembler;
+
+	@Autowired
+	private LightProductResourceAssembler lightProductAssembler;
 
 	@Autowired
 	private ImageResourceAssembler imageAssembler;
 
+	
+
 	@GetMapping("/catalog")
 	public ResponseEntity<List<ProductResource>> getAllProductsWithInformation() throws JsonProcessingException {
 		List<Product> listOfProducts = service.getAllProducts();
-		ModelMapper modelMapper = new ModelMapper();
-		List<ProductResource> productList = Arrays.asList(modelMapper.map(listOfProducts, ProductResource[].class));
+		List<ProductResource> productList = productAssembler.toResources(listOfProducts);
 		return new ResponseEntity<List<ProductResource>>(productList, HttpStatus.OK);
 	}
 
 	@GetMapping("/products")
 	public ResponseEntity<List<LightProductResource>> getAllProducts() throws JsonProcessingException {
 		List<Product> listOfProducts = service.getAllProducts();
-		ModelMapper modelMapper = new ModelMapper();
-		List<LightProductResource> productList = Arrays
-				.asList(modelMapper.map(listOfProducts, LightProductResource[].class));
+		List<LightProductResource> productList = lightProductAssembler.toResources(listOfProducts);
 		return new ResponseEntity<List<LightProductResource>>(productList, HttpStatus.OK);
 	}
 
 	@GetMapping("/products/{productId}")
 	public ResponseEntity<LightProductResource> getProduct(@PathVariable Long productId) {
 		Product product = service.findProduct(productId);
-		LightProductResource productDto = convertLightProductToResource(product);
+		LightProductResource productDto = lightProductAssembler.toResource(product);
 		return new ResponseEntity<LightProductResource>(productDto, HttpStatus.OK);
 	}
 
 	@GetMapping("/products/{productId}/info")
 	public ResponseEntity<ProductResource> getProductWithInfo(@PathVariable Long productId) {
 		Product product = service.findProduct(productId);
-		ProductResource productDto = resourceAssembler.toResource(product);
+		ProductResource productDto = productAssembler.toResource(product);
 		return new ResponseEntity<ProductResource>(productDto, HttpStatus.OK);
 	}
 
 	@PostMapping("products")
-	public ResponseEntity<Product> addProduct(@RequestBody ProductResource productDto) {
-		Product product = convertResourceToProduct(productDto);
+	public ResponseEntity<Void> addProduct(@RequestBody ProductResource productResource) {
+		Product product = convertResourceToProduct(productResource);
 		service.addProduct(product);
-		return new ResponseEntity<Product>(product, HttpStatus.CREATED);
+		return new ResponseEntity<Void>(HttpStatus.CREATED);
 	}
 
 	@PutMapping("products/{productId}")
-	public ResponseEntity<Product> updateProduct(@PathVariable Long productId,
-			@RequestBody ProductResource productDto) {
+	public ResponseEntity<Product> updateProduct(@PathVariable Long productId, @RequestBody ProductResource productDto) {
 		Product product = convertResourceToProduct(productDto);
 		if (productId != null) {
-			product.setId(productId);
+			product.setProductId(productId);
 		}
 		service.updateProduct(product);
 		return new ResponseEntity<Product>(product, HttpStatus.OK);
@@ -101,9 +96,8 @@ public class ProductController {
 
 	@GetMapping("/products/{productId}/images")
 	public ResponseEntity<List<ImageResource>> getAllImages(@PathVariable Long productId) {
-		ModelMapper modelMapper = new ModelMapper();
 		List<Image> imageOfImages = service.getAllImages(productId);
-		List<ImageResource> imageList = Arrays.asList(modelMapper.map(imageOfImages, ImageResource[].class));
+		List<ImageResource> imageList = imageAssembler.toResources(imageOfImages);
 		return new ResponseEntity<List<ImageResource>>(imageList, HttpStatus.OK);
 	}
 
@@ -115,23 +109,21 @@ public class ProductController {
 	}
 
 	@PostMapping("/products/{productId}/images")
-	public ResponseEntity<Image> addImage(@PathVariable Long productId, @RequestBody ImageResource imageDto) {
+	public ResponseEntity<Void> addImage(@PathVariable Long productId, @RequestBody ImageResource imageDto) {
 		Product product = service.findProduct(productId);
-		Image image = convertResourceToImage(imageDto);
+		Image image = imageAssembler.convertResourceToImage(imageDto);
 		if (product != null) {
 			image.setProduct(product);
 			service.addImage(image);
-			HttpHeaders headers = new HttpHeaders();
-			headers.setLocation(linkTo(methodOn(getClass()).getProduct(product.getId())).toUri());
 		}
-		return new ResponseEntity<Image>(image, HttpStatus.CREATED);
+		return new ResponseEntity<Void>(HttpStatus.CREATED);
 	}
 
 	@PutMapping("/products/{productId}/images/{imageId}")
 	public ResponseEntity<Image> updateImage(@PathVariable Long productId, @PathVariable Long imageId,
 			@RequestBody ImageResource imageDto) {
 		Product product = service.findProduct(productId);
-		Image image = convertResourceToImage(imageDto);
+		Image image = imageAssembler.convertResourceToImage(imageDto);
 		if (product != null) {
 			image.setProduct(product);
 		}
@@ -153,35 +145,16 @@ public class ProductController {
 	public ResponseEntity<Exception> handleBadRequests(Exception exception){
 		return new ResponseEntity<Exception>(exception, HttpStatus.CONFLICT);
 	}
-	
-
-	private Image convertResourceToImage(ImageResource imageDto) {
-		ModelMapper modelMapper = new ModelMapper();
-		Image image = modelMapper.map(imageDto, Image.class);
-		return image;
-	}
-
-	private ImageResource convertImageToResource(Image image) {
-		ModelMapper modelMapper = new ModelMapper();
-		ImageResource imageDto = modelMapper.map(image, ImageResource.class);
-		return imageDto;
-	}
 
 	private Product convertResourceToProduct(ProductResource productDto) {
 		ModelMapper modelMapper = new ModelMapper();
 		Product product = modelMapper.map(productDto, Product.class);
+		Product productParent = null;
+		if(productDto.getParentProduct() != null) {
+			productParent = service.findProduct(productDto.getParentProduct().getProductId());
+			product.setParentProduct(productParent);
+		}
 		return product;
 	}
 
-	private ProductResource convertProductToResource(Product product) {
-		ModelMapper modelMapper = new ModelMapper();
-		ProductResource productDto = modelMapper.map(product, ProductResource.class);
-		return productDto;
-	}
-
-	private LightProductResource convertLightProductToResource(Product product) {
-		ModelMapper modelMapper = new ModelMapper();
-		LightProductResource productDto = modelMapper.map(product, LightProductResource.class);
-		return productDto;
-	}
 }

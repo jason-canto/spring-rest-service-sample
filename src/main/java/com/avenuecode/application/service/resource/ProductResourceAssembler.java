@@ -1,11 +1,16 @@
 package com.avenuecode.application.service.resource;
 
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.modelmapper.ModelMapper;
-import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
 
 import com.avenuecode.application.controller.ProductController;
+import com.avenuecode.application.domain.Image;
 import com.avenuecode.application.domain.Product;
 
 @Component
@@ -20,7 +25,40 @@ public class ProductResourceAssembler extends ResourceAssemblerSupport<Product, 
 		ProductResource productResource = instantiateResource(product);
 		ModelMapper modelMapper = new ModelMapper();
 		productResource = modelMapper.map(product, ProductResource.class);
-		productResource.add(ControllerLinkBuilder.linkTo(ProductController.class).slash(product.getId()).withSelfRel());
+
+		List<Image> images = product.getImages();
+		List<Product> products = product.getProductChildren();
+
+		for (Image image : images) {
+			productResource.add(linkTo(ProductController.class)
+					.slash("products")
+					.slash(product.getProductId())
+					.slash("images")
+					.slash(image.getId())
+					.withRel("image"));
+		}
+
+		for (Product productChild : products) {
+			productResource.add(linkTo(ProductController.class)
+					.slash("products")
+					.slash(product.getProductId())
+					.slash("subproducts")
+					.slash(productChild.getProductId())
+					.withRel("subproduct"));
+		}
+		productResource.add(linkTo(ProductController.class)
+				.slash("products")
+				.slash(product.getProductId())
+				.withSelfRel());
 		return productResource;
+	}
+
+	@Override
+	public List<ProductResource> toResources(Iterable<? extends Product> products) {
+		List<ProductResource> resources = new ArrayList<ProductResource>();
+		for (Product product : products) {
+			resources.add(toResource(product));
+		}
+		return resources;
 	}
 }

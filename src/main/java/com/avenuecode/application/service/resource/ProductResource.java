@@ -2,22 +2,26 @@ package com.avenuecode.application.service.resource;
 
 import java.util.List;
 
-import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 public class ProductResource extends ResourceSupport {
 
-	private Link id;
+	private Long productId;
 	private String name;
 	private String description;
+
+	@JsonBackReference
 	private ProductResource parentProduct;
 	private List<ProductResource> productChildren;
 	private List<ImageResource> images;
 
 	public ProductResource() {}
 
-	public ProductResource(Link id, String name, String description, ProductResource parentProduct, List<ProductResource> productChildren, List<ImageResource> images) {
-		this.id = id;
+	public ProductResource(Long productId, String name, String description, ProductResource parentProduct, List<ProductResource> productChildren, List<ImageResource> images) {
+		this.productId = productId;
 		this.name = name;
 		this.description = description;
 		this.parentProduct = parentProduct;
@@ -25,8 +29,8 @@ public class ProductResource extends ResourceSupport {
 		this.images = images;
 	}
 
-	public Link getId() {
-		return id;
+	public Long getProductId() {
+		return productId;
 	}
 
 	public String getName() {
@@ -49,8 +53,8 @@ public class ProductResource extends ResourceSupport {
 		return images;
 	}
 
-	public void setId(Link id) {
-		this.id = id;
+	public void setProductId(Long productId) {
+		this.productId = productId;
 	}
 
 	public void setName(String name) {
