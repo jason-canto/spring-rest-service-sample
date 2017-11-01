@@ -138,6 +138,39 @@ public class RestdemoApplicationTests {
 			.andExpect(status().isAccepted());
 	}
 
+	@Test
+	public void fShouldUpdateFindProduct() throws Exception {
+
+		ProductResource product = getProductResource();
+		product.setDescription("teste description 2");
+		product.setName("teste 2");
+
+		String jsonProduct = json.toJson(product);
+
+		mvc.perform(put(RESOURCE_LOCATION + "/products/1")
+				.content(jsonProduct.getBytes())
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andReturn();
+
+		mvc.perform(get(RESOURCE_LOCATION +"/products/1")
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.name", is(product.getName())))
+				.andExpect(jsonPath("$.description", is(product.getDescription())));
+	}
+
+	@Test
+	public void gShouldDeleteFindProduct() throws Exception {
+		mvc.perform(delete(RESOURCE_LOCATION + "/products/1"))
+				.andExpect(status().isAccepted());
+	
+		mvc.perform(get("/products")
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$", hasSize(0)));
+	}
+
 	private ProductResource getProductResource() {
 		ProductResource product = new ProductResource();
 		product.setDescription("teste description");
