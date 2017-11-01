@@ -1,4 +1,4 @@
-package com.avenuecode.application.service.resource;
+package com.springcatalog.application.service.resource;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
@@ -9,9 +9,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
 
-import com.avenuecode.application.controller.ProductController;
-import com.avenuecode.application.domain.Image;
-import com.avenuecode.application.domain.Product;
+import com.springcatalog.application.controller.ProductController;
+import com.springcatalog.application.domain.Image;
+import com.springcatalog.application.domain.Product;
 
 @Component
 public class ProductResourceAssembler extends ResourceAssemblerSupport<Product, ProductResource> {

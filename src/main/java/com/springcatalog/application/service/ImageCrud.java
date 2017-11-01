@@ -1,10 +1,10 @@
-package com.avenuecode.application.service;
+package com.springcatalog.application.service;
 
 import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
 
-import com.avenuecode.application.domain.Image;
+import com.springcatalog.application.domain.Image;
 
 public interface ImageCrud extends CrudRepository<Image, Long>{
 

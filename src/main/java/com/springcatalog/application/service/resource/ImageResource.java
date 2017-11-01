@@ -1,4 +1,4 @@
-package com.avenuecode.application.service.resource;
+package com.springcatalog.application.service.resource;
 
 import org.springframework.hateoas.ResourceSupport;
 

@@ -9,12 +9,12 @@ import org.modelmapper.ModelMapper;
 
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.avenuecode.application.RestdemoApplication;
-import com.avenuecode.application.controller.ProductController;
-import com.avenuecode.application.domain.Product;
-import com.avenuecode.application.service.resource.ImageResource;
-import com.avenuecode.application.service.resource.ProductResource;
 import com.google.gson.Gson;
+import com.springcatalog.application.RestdemoApplication;
+import com.springcatalog.application.controller.ProductController;
+import com.springcatalog.application.domain.Product;
+import com.springcatalog.application.service.resource.ImageResource;
+import com.springcatalog.application.service.resource.ProductResource;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;

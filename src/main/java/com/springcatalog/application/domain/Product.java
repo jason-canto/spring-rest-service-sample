@@ -1,4 +1,4 @@
-package com.avenuecode.application.domain;
+package com.springcatalog.application.domain;
 
 import java.io.Serializable;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.avenuecode.application.controller;
+package com.springcatalog.application.controller;
 
 import java.util.List;
 
@@ -15,16 +15,16 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.avenuecode.application.domain.Image;
-import com.avenuecode.application.domain.Product;
-import com.avenuecode.application.service.ProductService;
-import com.avenuecode.application.service.resource.ImageResource;
-import com.avenuecode.application.service.resource.ImageResourceAssembler;
-import com.avenuecode.application.service.resource.LightProductResource;
-import com.avenuecode.application.service.resource.LightProductResourceAssembler;
-import com.avenuecode.application.service.resource.ProductResource;
-import com.avenuecode.application.service.resource.ProductResourceAssembler;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.springcatalog.application.domain.Image;
+import com.springcatalog.application.domain.Product;
+import com.springcatalog.application.service.ProductService;
+import com.springcatalog.application.service.resource.ImageResource;
+import com.springcatalog.application.service.resource.ImageResourceAssembler;
+import com.springcatalog.application.service.resource.LightProductResource;
+import com.springcatalog.application.service.resource.LightProductResourceAssembler;
+import com.springcatalog.application.service.resource.ProductResource;
+import com.springcatalog.application.service.resource.ProductResourceAssembler;
 
 @RestController
 public class ProductController {

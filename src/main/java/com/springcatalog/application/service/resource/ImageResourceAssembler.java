@@ -1,7 +1,10 @@
-package com.avenuecode.application.service.resource;
+package com.springcatalog.application.service.resource;
 
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
+
+import com.springcatalog.application.controller.ProductController;
+import com.springcatalog.application.domain.Image;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
@@ -9,9 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
-
-import com.avenuecode.application.controller.ProductController;
-import com.avenuecode.application.domain.Image;
 
 @Component
 public class ImageResourceAssembler extends ResourceAssemblerSupport<Image, ImageResource> {

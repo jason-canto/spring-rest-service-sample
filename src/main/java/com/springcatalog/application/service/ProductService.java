@@ -1,4 +1,4 @@
-package com.avenuecode.application.service;
+package com.springcatalog.application.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,8 +6,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.avenuecode.application.domain.Image;
-import com.avenuecode.application.domain.Product;
+import com.springcatalog.application.domain.Image;
+import com.springcatalog.application.domain.Product;
 
 @Service
 public class ProductService {

@@ -1,4 +1,4 @@
-package com.avenuecode.application;
+package com.springcatalog.application;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
