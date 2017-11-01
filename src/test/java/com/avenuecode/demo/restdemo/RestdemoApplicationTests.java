@@ -98,7 +98,22 @@ public class RestdemoApplicationTests {
 	}
 
 	@Test
-	public void dShouldCreateFindDeleteImage() throws Exception {
+	public void dShouldCreateCountProduct() throws Exception {
+		String jsonProduct = json.toJson(getProductResource());
+		mvc.perform(post(RESOURCE_LOCATION + "/products")
+				.content(jsonProduct.getBytes())
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isCreated()).andReturn();
+		
+		mvc.perform(get(RESOURCE_LOCATION +"/products")
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$", hasSize(2)));
+	}
+
+	@Test
+	public void eShouldCreateFindDeleteImage() throws Exception {
 
 		ImageResource image = new ImageResource();
 		image.setType("jpg");
@@ -117,7 +132,7 @@ public class RestdemoApplicationTests {
 	}
 
 	@Test
-	public void eShouldUpdateFindDeleteImage() throws Exception {
+	public void fShouldUpdateFindDeleteImage() throws Exception {
 
 		ImageResource image = new ImageResource();
 		image.setType("png");
@@ -139,7 +154,7 @@ public class RestdemoApplicationTests {
 	}
 
 	@Test
-	public void fShouldUpdateFindProduct() throws Exception {
+	public void gShouldUpdateFindProduct() throws Exception {
 
 		ProductResource product = getProductResource();
 		product.setDescription("teste description 2");
@@ -161,21 +176,20 @@ public class RestdemoApplicationTests {
 	}
 
 	@Test
-	public void gShouldDeleteFindProduct() throws Exception {
+	public void hShouldDeleteFindProduct() throws Exception {
 		mvc.perform(delete(RESOURCE_LOCATION + "/products/1"))
 				.andExpect(status().isAccepted());
 	
 		mvc.perform(get("/products")
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("$", hasSize(0)));
+				.andExpect(jsonPath("$", hasSize(1)));
 	}
 
 	private ProductResource getProductResource() {
 		ProductResource product = new ProductResource();
 		product.setDescription("teste description");
 		product.setName("teste");
-		product.setProductId(Long.valueOf(1));
 		return product;
 	}
 
