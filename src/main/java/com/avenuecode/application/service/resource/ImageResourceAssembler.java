@@ -47,9 +47,4 @@ public class ImageResourceAssembler extends ResourceAssemblerSupport<Image, Imag
 		return resources;
 	}
 
-	public Image convertResourceToImage(ImageResource imageDto) {
-		ModelMapper modelMapper = new ModelMapper();
-		Image image = modelMapper.map(imageDto, Image.class);
-		return image;
-	}
 }

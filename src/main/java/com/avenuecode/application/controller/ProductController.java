@@ -111,7 +111,7 @@ public class ProductController {
 	@PostMapping("/products/{productId}/images")
 	public ResponseEntity<Void> addImage(@PathVariable Long productId, @RequestBody ImageResource imageDto) {
 		Product product = service.findProduct(productId);
-		Image image = imageAssembler.convertResourceToImage(imageDto);
+		Image image = convertResourceToImage(imageDto);
 		if (product != null) {
 			image.setProduct(product);
 			service.addImage(image);
@@ -123,7 +123,7 @@ public class ProductController {
 	public ResponseEntity<Image> updateImage(@PathVariable Long productId, @PathVariable Long imageId,
 			@RequestBody ImageResource imageDto) {
 		Product product = service.findProduct(productId);
-		Image image = imageAssembler.convertResourceToImage(imageDto);
+		Image image = convertResourceToImage(imageDto);
 		if (product != null) {
 			image.setProduct(product);
 		}
@@ -155,6 +155,12 @@ public class ProductController {
 			product.setParentProduct(productParent);
 		}
 		return product;
+	}
+
+	private Image convertResourceToImage(ImageResource imageDto) {
+		ModelMapper modelMapper = new ModelMapper();
+		Image image = modelMapper.map(imageDto, Image.class);
+		return image;
 	}
 
 }
