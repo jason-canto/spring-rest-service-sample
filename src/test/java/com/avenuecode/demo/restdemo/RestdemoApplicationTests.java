@@ -117,11 +117,11 @@ public class RestdemoApplicationTests {
 	}
 
 	@Test
-	public void eShouldUpdateFindImage() throws Exception {
+	public void eShouldUpdateFindDeleteImage() throws Exception {
 
 		ImageResource image = new ImageResource();
-		String jsonImage = json.toJson(image);
 		image.setType("png");
+		String jsonImage = json.toJson(image);
 
 		mvc.perform(put(RESOURCE_LOCATION + "/products/1/images/1")
 				.content(jsonImage.getBytes())
@@ -133,6 +133,9 @@ public class RestdemoApplicationTests {
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.type", is(image.getType())));
+
+		mvc.perform(delete(RESOURCE_LOCATION + "/products/1/images/1"))
+			.andExpect(status().isAccepted());
 	}
 
 	private ProductResource getProductResource() {
